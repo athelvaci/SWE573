@@ -2,8 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d817ae12-56d8-43d5-bd22-c8c2cc72317e" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -53,7 +52,7 @@
       <option name="presentableId" value="Default" />
       <updated>1621793180221</updated>
       <workItem from="1621793181850" duration="488000" />
-      <workItem from="1621793680666" duration="2261000" />
+      <workItem from="1621793680666" duration="2579000" />
     </task>
     <task id="LOCAL-00001" summary="Files grouped">
       <created>1621793391219</created>
@@ -76,7 +75,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621794945668</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="gitignore added">
+      <created>1621795997545</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1621795997545</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -86,24 +92,25 @@
     <MESSAGE value="Files grouped" />
     <MESSAGE value="Front-end and Back-end applications added." />
     <MESSAGE value="Diagram packages changed." />
-    <option name="LAST_COMMIT_MESSAGE" value="Diagram packages changed." />
+    <MESSAGE value="gitignore added" />
+    <option name="LAST_COMMIT_MESSAGE" value="gitignore added" />
   </component>
   <component name="WindowStateProjectService">
     <state x="724" y="310" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1621794575334">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="724" y="310" key="#com.intellij.fileTypes.FileTypeChooser/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1621794575334" />
-    <state x="585" y="1" key="CommitChangelistDialog2" timestamp="1621794944793">
+    <state x="585" y="1" key="CommitChangelistDialog2" timestamp="1621795996691">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="585" y="1" key="CommitChangelistDialog2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1621794944793" />
+    <state x="585" y="1" key="CommitChangelistDialog2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1621795996691" />
     <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1621793753548">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="740" y="275" key="FileChooserDialogImpl/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1621793753548" />
-    <state x="552" y="234" key="Vcs.Push.Dialog.v2" timestamp="1621795008202">
+    <state x="552" y="234" key="Vcs.Push.Dialog.v2" timestamp="1621796003108">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="552" y="234" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1621795008202" />
+    <state x="552" y="234" key="Vcs.Push.Dialog.v2/-1920.0.1920.1040/0.0.1920.1040@0.0.1920.1040" timestamp="1621796003108" />
   </component>
 </project>
