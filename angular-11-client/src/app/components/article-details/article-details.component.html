@@ -1,65 +1,67 @@
 <div>
-  <div *ngIf="currentArticle.id" class="edit-form">
-    <h4>Article</h4>
-    <form>
-      <div class="form-group">
-        <label for="title">Title</label>
-        <input
-          type="text"
-          class="form-control"
-          id="title"
-          [(ngModel)]="currentArticle.title"
-          name="title"
-        />
-      </div>
-      <div class="form-group">
-        <label for="description">Description</label>
-        <input
-          type="text"
-          class="form-control"
-          id="description"
-          [(ngModel)]="currentArticle.description"
-          name="description"
-        />
-      </div>
 
-      <div class="form-group">
-        <label><strong>Status:</strong></label>
-        {{ currentArticle.published ? "Published" : "Pending" }}
-      </div>
-    </form>
-
-    <button
-      class="badge badge-primary mr-2"
-      *ngIf="currentArticle.published"
-      (click)="updatePublished(false)"
-    >
-      UnPublish
-    </button>
-    <button
-      *ngIf="!currentArticle.published"
-      class="badge badge-primary mr-2"
-      (click)="updatePublished(true)"
-    >
-      Publish
-    </button>
-
-    <button class="badge badge-danger mr-2" (click)="deleteArticle()">
-      Delete
-    </button>
-
-    <button
-      type="submit"
-      class="badge badge-success mb-2"
-      (click)="updateArticle()"
-    >
-      Update
-    </button>
-    <p>{{ message }}</p>
-  </div>
-
-  <div *ngIf="!currentArticle.id">
-    <br />
+  <div *ngIf="!currentArticle.title">
+    <br/>
     <p>Cannot access this Article...</p>
   </div>
+
+
+  <div>
+
+    <div class="card" style="width: 38rem;">
+      <div class="card-body">
+        <h5 class="card-title">{{currentArticle.title}}</h5>
+        <h6 class="card-subtitle mb-3 text-muted">Authors </h6>
+        <ul class="list-group list-group-horizontal-md">
+          <li class="list-group-item" *ngFor="let author of currentArticle.authors; let i = index"
+
+          >
+            {{author.foreName + " " + author.lastName}}
+          </li>
+
+        </ul>
+
+        <p class="card-text">{{currentArticle.articleAbstract}}</p>
+        <p class="card-text"> Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est
+          non commodo luctus.</p>
+
+        <form>
+          <div class="form-group">
+
+            <input
+              type="text"
+              class="form-control"
+              id="tagSubmit"
+              [(ngModel)]="currentArticle.title"
+              name="title"
+            />
+          </div>
+        </form>
+
+        <button
+          *ngIf="!currentArticle.published"
+          class="btn btn-primary"
+          (click)="updatePublished(true)"
+        >
+          Add tag
+        </button>
+        <!--
+                <button class="badge badge-danger mr-2" (click)="deleteArticle()">
+                  Delete
+                </button>
+
+                <button
+                  type="submit"
+                  class="badge badge-success mb-2"
+                  (click)="updateArticle()"
+                >
+                  Update
+                </button>
+                -->
+      </div>
+    </div>
+
+
+  </div>
+
 </div>

@@ -1,123 +1,139 @@
 package com.pubmed.spring.datajpa.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
+import com.pubmed.spring.datajpa.model.Article;
+import com.pubmed.spring.datajpa.model.ArticleTag;
+import com.pubmed.spring.datajpa.model.dto.ArticleResponseDto;
+import com.pubmed.spring.datajpa.model.request.ArticleTagRequestDto;
+import com.pubmed.spring.datajpa.repository.ArticleRepository;
+import com.pubmed.spring.datajpa.service.EntrezApiService;
+import com.pubmed.spring.datajpa.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import com.pubmed.spring.datajpa.model.Article;
-import com.pubmed.spring.datajpa.repository.ArticleRepository;
-@CrossOrigin(origins = "http://localhost:4200")
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
+
 @RestController
 @RequestMapping("/api")
 public class ArticleController {
 
-	@Autowired
-	ArticleRepository articleRepository;
+    @Autowired
+    ArticleRepository articleRepository;
+    @Autowired
+    EntrezApiService entrezApiService;
+    @Autowired
+    private TagService tagService;
 
-	@GetMapping("/articles")
-	public ResponseEntity<List<Article>> getAllArticles(@RequestParam(required = false) String title) {
-		try {
-			List<Article> articles = new ArrayList<Article>();
+    @GetMapping("/tagged-articles")
+    public ResponseEntity<List<ArticleResponseDto>> getAllArticles() {
+        try {
+            List<ArticleTag> allArticleTags = tagService.getAllTags();
+            List<ArticleResponseDto> articlesByTag = tagService.getArticlesByTag(allArticleTags);
 
-			if (title == null)
-				articleRepository.findAll().forEach(articles::add);
-			else
-				articleRepository.findByTitleContaining(title).forEach(articles::add);
+            if (articlesByTag.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
 
-			if (articles.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
+            return new ResponseEntity<>(articlesByTag, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-			return new ResponseEntity<>(articles, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @PostMapping("/articles/tag")
+    public ResponseEntity<ArticleTag> tagArticle(@RequestBody ArticleTagRequestDto articleTagRequestDto) {
+        if (articleTagRequestDto == null) {
+            return new ResponseEntity<>(null, HttpStatus.NO_CONTENT);
+        }
+        try {
+            ArticleTag articleTag = tagService.populateArticleTag(articleTagRequestDto);
+            ArticleTag _article = tagService
+                    .saveArticle(articleTag);
+            return new ResponseEntity<>(_article, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-	@GetMapping("/articles/{id}")
-	public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
-		Optional<Article> articleData = articleRepository.findById(id);
+    @GetMapping("/articles/{id}")
+    public ResponseEntity<Article> getArticleById(@PathVariable("id") long id) {
+        Optional<Article> articleData = articleRepository.findById(id);
 
-		if (articleData.isPresent()) {
-			return new ResponseEntity<>(articleData.get(), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
+        return articleData.map(article -> new ResponseEntity<>(article, HttpStatus.OK)).orElseGet(() -> new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
 
-	@PostMapping("/articles")
-	public ResponseEntity<Article> createArticle(@RequestBody Article article) {
-		try {
-			Article _article = articleRepository
-					.save(new Article(article.getTitle(), article.getDescription(), false));
-			return new ResponseEntity<>(_article, HttpStatus.CREATED);
-		} catch (Exception e) {
-			return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @PostMapping("/articles")
+    public ResponseEntity<Article> createArticle(@RequestBody Article article) {
+        try {
+            Article _article = articleRepository
+                    .save(new Article(article.getTitle(), article.getDescription(), false));
+            return new ResponseEntity<>(_article, HttpStatus.CREATED);
+        } catch (Exception e) {
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-	@PutMapping("/articles/{id}")
-	public ResponseEntity<Article> updateArticle(@PathVariable("id") long id, @RequestBody Article article) {
-		Optional<Article> articleData = articleRepository.findById(id);
+    @PutMapping("/articles/{id}")
+    public ResponseEntity<Article> updateArticle(@PathVariable("id") long id, @RequestBody Article article) {
+        Optional<Article> articleData = articleRepository.findById(id);
 
-		if (articleData.isPresent()) {
-			Article _article = articleData.get();
-			_article.setTitle(article.getTitle());
-			_article.setDescription(article.getDescription());
-			_article.setPublished(article.isPublished());
-			return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
-		} else {
-			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		}
-	}
+        if (articleData.isPresent()) {
+            Article _article = articleData.get();
+            _article.setTitle(article.getTitle());
+            _article.setDescription(article.getDescription());
+            _article.setPublished(article.isPublished());
+            return new ResponseEntity<>(articleRepository.save(_article), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
 
-	@DeleteMapping("/articles/{id}")
-	public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("id") long id) {
-		try {
-			articleRepository.deleteById(id);
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+    @DeleteMapping("/articles/{id}")
+    public ResponseEntity<HttpStatus> deleteArticle(@PathVariable("id") long id) {
+        try {
+            articleRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
-	@DeleteMapping("/articles")
-	public ResponseEntity<HttpStatus> deleteAllArticles() {
-		try {
-			articleRepository.deleteAll();
-			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+    @DeleteMapping("/articles")
+    public ResponseEntity<HttpStatus> deleteAllArticles() {
+        try {
+            articleRepository.deleteAll();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
-	}
+    }
 
-	@GetMapping("/articles/published")
-	public ResponseEntity<List<Article>> findByPublished() {
-		try {
-			List<Article> articles = articleRepository.findByPublished(true);
+    @GetMapping("/articles/published")
+    public ResponseEntity<List<Article>> findByPublished() {
+        try {
+            List<Article> articles = articleRepository.findByPublished(true);
 
-			if (articles.isEmpty()) {
-				return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-			}
-			return new ResponseEntity<>(articles, HttpStatus.OK);
-		} catch (Exception e) {
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
+            if (articles.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+            return new ResponseEntity<>(articles, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @GetMapping(value = "/entrez/article", params = {"query"})
+    public ResponseEntity<Set<ArticleResponseDto>> getArticles(@RequestParam String query) {
+        return ResponseEntity.ok(tagService.getArticleResponseByQuery(query));
+    }
+
+    @GetMapping("/entrez/article/{id}")
+    public ResponseEntity<ArticleResponseDto> getArticleById(@PathVariable String id) {
+        return ResponseEntity.ok(tagService.getArticleResponseById(id));
+    }
 
 }

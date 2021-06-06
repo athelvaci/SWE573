@@ -10,8 +10,7 @@ import { ArticleService } from 'src/app/services/article.service';
 export class AddArticleComponent implements OnInit {
   article: Article = {
     title: '',
-    description: '',
-    published: false
+    articleAbstract: ''
   };
   submitted = false;
 
@@ -23,7 +22,6 @@ export class AddArticleComponent implements OnInit {
   saveArticle(): void {
     const data = {
       title: this.article.title,
-      description: this.article.description
     };
 
     this.articleService.create(data)
@@ -41,8 +39,7 @@ export class AddArticleComponent implements OnInit {
     this.submitted = false;
     this.article = {
       title: '',
-      description: '',
-      published: false
+      articleAbstract: ''
     };
   }
 

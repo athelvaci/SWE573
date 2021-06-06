@@ -8,13 +8,15 @@ import { AppComponent } from './app.component';
 import { AddArticleComponent } from './components/add-article/add-article.component';
 import { ArticleDetailsComponent } from './components/article-details/article-details.component';
 import { ArticleListComponent } from './components/article-list/article-list.component';
+import { TruncateStringPipe } from './pipe/truncate-string.pipe';
 
 @NgModule({
   declarations: [
     AppComponent,
     AddArticleComponent,
     ArticleDetailsComponent,
-    ArticleListComponent
+    ArticleListComponent,
+    TruncateStringPipe
   ],
   imports: [
     BrowserModule,

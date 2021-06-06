@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { ArticleService } from 'src/app/services/article.service';
-import { ActivatedRoute, Router } from '@angular/router';
-import { Article } from 'src/app/models/article.model';
+import {Component, OnInit} from '@angular/core';
+import {ArticleService} from 'src/app/services/article.service';
+import {ActivatedRoute, Router} from '@angular/router';
+import {Article} from 'src/app/models/article.model';
 
 @Component({
   selector: 'app-article-details',
@@ -11,15 +11,15 @@ import { Article } from 'src/app/models/article.model';
 export class ArticleDetailsComponent implements OnInit {
   currentArticle: Article = {
     title: '',
-    description: '',
-    published: false
+    articleAbstract: ''
   };
   message = '';
 
   constructor(
     private articleService: ArticleService,
     private route: ActivatedRoute,
-    private router: Router) { }
+    private router: Router) {
+  }
 
   ngOnInit(): void {
     this.message = '';
@@ -41,16 +41,16 @@ export class ArticleDetailsComponent implements OnInit {
   updatePublished(status: boolean): void {
     const data = {
       title: this.currentArticle.title,
-      description: this.currentArticle.description,
+      description: this.currentArticle.articleAbstract,
       published: status
     };
 
     this.message = '';
 
-    this.articleService.update(this.currentArticle.id, data)
+    this.articleService.update(this.currentArticle.entityId, data)
       .subscribe(
         response => {
-          this.currentArticle.published = status;
+          // this.currentArticle.published = status;
           console.log(response);
           this.message = response.message ? response.message : 'This article was updated successfully!';
         },
@@ -62,7 +62,7 @@ export class ArticleDetailsComponent implements OnInit {
   updateArticle(): void {
     this.message = '';
 
-    this.articleService.update(this.currentArticle.id, this.currentArticle)
+    this.articleService.update(this.currentArticle.entityId, this.currentArticle)
       .subscribe(
         response => {
           console.log(response);
@@ -74,7 +74,7 @@ export class ArticleDetailsComponent implements OnInit {
   }
 
   deleteArticle(): void {
-    this.articleService.delete(this.currentArticle.id)
+    this.articleService.delete(this.currentArticle.entityId)
       .subscribe(
         response => {
           console.log(response);

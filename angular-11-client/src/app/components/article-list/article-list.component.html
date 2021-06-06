@@ -18,6 +18,7 @@
       </div>
     </div>
   </div>
+  <!--<div class="col-md-6" *ngIf="articles.length>0"> -->
   <div class="col-md-6">
     <h4>Article List</h4>
     <ul class="list-group">
@@ -27,39 +28,81 @@
         [class.active]="i == currentIndex"
         (click)="setActiveArticle(article, i)"
       >
-        {{ article.title }}
+        <!--<b>Title:</b> {{ (article.title.length>6)? (article.title | slice:0:69)+'..':(article.title) }}-->
+        <!--<b>Title:</b> {{ article.title | truncateString:[69, '...'] }} -->
+        <b>Title:</b> {{ article.title }}
       </li>
     </ul>
-
+<!--
     <button class="m-3 btn btn-sm btn-danger" (click)="removeAllArticles()">
       Remove All
     </button>
+    -->
   </div>
   <div class="col-md-6">
     <div *ngIf="currentArticle">
       <h4>Article</h4>
       <div>
-        <label><strong>ID:</strong></label> {{ currentArticle.id }}
+        <label><strong>ID:</strong></label> {{ currentArticle.entityId }}
       </div>
       <div>
         <label><strong>Title:</strong></label> {{ currentArticle.title }}
       </div>
       <div>
         <label><strong>Description:</strong></label>
-        {{ currentArticle.description }}
+        {{ currentArticle.articleAbstract }}
       </div>
       <div>
         <label><strong>Status:</strong></label>
         {{ currentArticle.published ? "Published" : "Pending" }}
       </div>
       <a  routerLink="/articles/{{ currentArticle.id }}">
-        Edit
+        Details
       </a>
     </div>
-
+<!--
     <div *ngIf="!currentArticle">
       <br />
       <p>Please click on an article...</p>
     </div>
+  -->
   </div>
-</div>
+  <!--
+    <div class="col-md-12">
+      <h4>Tagged Article List</h4>
+      <ul class="list-group">
+        <li
+          class="list-group-item"
+          *ngFor="let taggedArticle of taggedArticles; let i = index"
+          [class.active]="i == currentIndex"
+          (click)="setActiveArticle(taggedArticle, i)"
+        >
+          {{ taggedArticle.title }}
+          {{ taggedArticle.authors }}
+        </li>
+      </ul>
+
+    </div>
+    -->
+
+  <div class="col-md-12">
+    <h4>Tagged Articles</h4>
+    <table mdbTable>
+      <thead>
+      <tr>
+        <th scope="col">ID </th>
+        <th scope="col">Title </th>
+        <th scope="col">Tag </th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr mdbTableCol *ngFor="let taggedArticle of taggedArticles">
+        <th scope="row">{{taggedArticle.id}}</th>
+        <td>{{taggedArticle.title}}</td>
+        <td *ngFor="let tag of taggedArticle.tags">{{tag.tagName}}- {{tag.wiki_url}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+  </div>
+  </div>

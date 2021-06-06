@@ -9,6 +9,7 @@ import { ArticleService } from 'src/app/services/article.service';
 })
 export class ArticleListComponent implements OnInit {
   articles?: Article[];
+  taggedArticles?: Article[];
   currentArticle?: Article;
   currentIndex = -1;
   title = '';
@@ -23,7 +24,7 @@ export class ArticleListComponent implements OnInit {
     this.articleService.getAll()
       .subscribe(
         data => {
-          this.articles = data;
+          this.taggedArticles = data;
           console.log(data);
         },
         error => {
