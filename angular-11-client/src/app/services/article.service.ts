@@ -19,6 +19,10 @@ export class ArticleService {
     return this.http.get<Article[]>(taggedArticlesUrl);
   }
 
+  getAllTaggedArticlesOfAUser(userId: any): Observable<Article[]> {
+    return this.http.get<Article[]>(`${taggedArticlesUrl}/${userId}`);
+  }
+
   get(id: any): Observable<Article> {
     return this.http.get(`${pubmedApi}/${id}`);
   }

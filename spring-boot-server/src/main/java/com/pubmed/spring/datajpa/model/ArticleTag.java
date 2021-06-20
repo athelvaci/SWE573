@@ -64,4 +64,5 @@ public class ArticleTag {
     public void setCreateDate(Date createDate) {
         this.createDate = createDate;
     }
+
 }

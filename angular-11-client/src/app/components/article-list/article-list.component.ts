@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
-import { Article } from 'src/app/models/article.model';
-import { ArticleService } from 'src/app/services/article.service';
+import {Component, OnInit} from '@angular/core';
+import {Article} from 'src/app/models/article.model';
+import {ArticleService} from 'src/app/services/article.service';
+import {TokenStorageService} from '../../_services/token-storage.service';
 
 @Component({
   selector: 'app-article-list',
@@ -13,14 +14,21 @@ export class ArticleListComponent implements OnInit {
   currentArticle?: Article;
   currentIndex = -1;
   title = '';
+  currentUser: any;
 
-  constructor(private articleService: ArticleService) { }
+  constructor(private articleService: ArticleService, private token: TokenStorageService) {
+  }
 
   ngOnInit(): void {
+    this.currentUser = this.token.getUser();
     this.retrieveArticles();
   }
 
   retrieveArticles(): void {
+    if (this.currentUser == null) {
+      return;
+    }
+
     this.articleService.getAll()
       .subscribe(
         data => {
@@ -32,27 +40,10 @@ export class ArticleListComponent implements OnInit {
         });
   }
 
-  refreshList(): void {
-    this.retrieveArticles();
-    this.currentArticle = undefined;
-    this.currentIndex = -1;
-  }
 
   setActiveArticle(article: Article, index: number): void {
     this.currentArticle = article;
     this.currentIndex = index;
-  }
-
-  removeAllArticles(): void {
-    this.articleService.deleteAll()
-      .subscribe(
-        response => {
-          console.log(response);
-          this.refreshList();
-        },
-        error => {
-          console.log(error);
-        });
   }
 
   searchTitle(): void {

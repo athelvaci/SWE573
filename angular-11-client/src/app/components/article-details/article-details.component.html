@@ -22,8 +22,17 @@
         </ul>
 
         <p class="card-text">{{currentArticle.articleAbstract}}</p>
-        <p class="card-text"> Vivamus sagittis lacus vel augue laoreet rutrum faucibus dolor auctor. Duis mollis, est
-          non commodo luctus.</p>
+        <h6 class="card-subtitle mb-3 text-muted">keywords </h6>
+        <ul class="list-group list-group-horizontal-md">
+          <li class="list-group-item" *ngFor="let keyword of currentArticle.keywords; let i = index"
+
+          >
+            {{keyword}}
+          </li>
+
+        </ul>
+
+        <br>
 
         <form>
           <div class="form-group">
@@ -31,9 +40,18 @@
             <input
               type="text"
               class="form-control"
-              id="tagSubmit"
-              [(ngModel)]="currentArticle.title"
+              id="tagName"
+              [(ngModel)]="currentArticle.tags"
               name="title"
+              placeholder="Tag name"
+            />
+            <input
+              type="text"
+              class="form-control"
+              id="tagLink"
+              [(ngModel)]="currentArticle.rate "
+              name="title"
+              placeholder="URL to WikiData"
             />
           </div>
         </form>

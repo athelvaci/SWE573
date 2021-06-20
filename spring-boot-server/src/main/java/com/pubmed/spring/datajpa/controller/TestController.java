@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class TestController {
     @GetMapping("/all")
     public String allAccess() {
-        return "Public Content.";
+        return "Please Login or Sign-up to search and tag article.";
     }
 
     @GetMapping("/user")
