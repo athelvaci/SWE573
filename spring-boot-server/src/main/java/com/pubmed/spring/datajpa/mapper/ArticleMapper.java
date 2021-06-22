@@ -6,6 +6,7 @@ import com.pubmed.spring.datajpa.model.dto.ArticleResponseDto;
 import com.pubmed.spring.datajpa.model.dto.ArticleTagResponseDto;
 import com.pubmed.spring.datajpa.model.request.ArticleAuthorResponseDto;
 import com.pubmed.spring.datajpa.service.api.entrez.PubmedArticle;
+import org.springframework.util.CollectionUtils;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -43,6 +44,28 @@ public class ArticleMapper {
 
     public static void mapArticleResponseDto(ArticleResponseDto articleResponseDto, ArticleTag articleTag) {
         ArticleTagResponseDto tagResponseDto = ArticleTagResponseDto.builder().tagName(articleTag.getLabel()).wiki_url(articleTag.getWikiUrl()).entityId(articleTag.getId()).build();
-        articleResponseDto.setTags(Collections.singleton(tagResponseDto));
+        if (articleResponseDto.getTags() != null) {
+            Set<ArticleTagResponseDto> tags = new HashSet<>(articleResponseDto.getTags());
+            tags.add(tagResponseDto);
+            articleResponseDto.setTags(tags);
+        } else {
+            articleResponseDto.setTags(Collections.singleton(tagResponseDto));
+        }
+    }
+
+    public static void mapArticleTag(ArticleResponseDto articleResponseDto, List<ArticleTag> articleTags) {
+        if (CollectionUtils.isEmpty(articleTags)) {
+            return;
+        }
+        Set<ArticleTagResponseDto> articleTagResponseDtos = articleTags.stream().map(ArticleMapper::mapArticleTagResponse).collect(Collectors.toSet());
+        articleResponseDto.setTags(articleTagResponseDtos);
+    }
+
+    private static ArticleTagResponseDto mapArticleTagResponse(ArticleTag articleTag) {
+        ArticleTagResponseDto articleTagResponseDto = new ArticleTagResponseDto();
+        articleTagResponseDto.setEntityId(articleTag.getId());
+        articleTagResponseDto.setTagName(articleTag.getLabel());
+        articleTagResponseDto.setWiki_url(articleTag.getWikiUrl());
+        return articleTagResponseDto;
     }
 }

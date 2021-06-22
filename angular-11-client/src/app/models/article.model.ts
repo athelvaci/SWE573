@@ -9,6 +9,4 @@ export class Article {
   authors?: Author[];
   tags?: ArticleTagModel[];
   keywords?: string[];
-  published?: boolean;
-  rate?: number;
 }

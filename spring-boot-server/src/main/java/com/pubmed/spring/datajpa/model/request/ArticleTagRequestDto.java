@@ -11,4 +11,6 @@ public class ArticleTagRequestDto {
     private String pubmedArticleId;
     private String tagName;
     private String wiki_url;
+    private Long user_id;
+
 }

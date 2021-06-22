@@ -11,6 +11,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -32,6 +33,14 @@ public class TagService {
         List<ArticleResponseDto> articleResponseDtos = new ArrayList<>();
 
         for (ArticleTag articleTag : allArticleTags) {
+            if (isListContain(articleTag, articleResponseDtos)) {
+                ArticleResponseDto articleResponseDto = articleResponseDtos.stream().
+                        filter(ard -> Objects.equals(articleTag.getPubmedId(), String.valueOf(ard.getId())))
+                        .findAny()
+                        .get();
+                ArticleMapper.mapArticleResponseDto(articleResponseDto, articleTag);
+                continue;
+            }
             PubmedArticle articleById = entrezApiService.getArticleById(articleTag.getPubmedId());
             ArticleResponseDto articleResponseDto = ArticleMapper.mapPubmedArticleToArticleResponseDto(articleById);
             ArticleMapper.mapArticleResponseDto(articleResponseDto, articleTag);
@@ -39,6 +48,15 @@ public class TagService {
             articleResponseDtos.add(articleResponseDto);
         }
         return articleResponseDtos;
+    }
+
+    private boolean isListContain(ArticleTag articleTag, List<ArticleResponseDto> articleResponseDtos) {
+        for (ArticleResponseDto articleResponseDto : articleResponseDtos) {
+            if (Objects.equals(articleTag.getPubmedId(), String.valueOf(articleResponseDto.getId()))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public Set<ArticleResponseDto> getArticleResponseByQuery(String query) {
@@ -55,7 +73,10 @@ public class TagService {
 
     public ArticleResponseDto getArticleResponseById(String articleId) {
         PubmedArticle articleById = entrezApiService.getArticleById(articleId);
-        return ArticleMapper.mapPubmedArticleToArticleResponseDto(articleById);
+        List<ArticleTag> articleTags = tagRepository.findByPubmedId(articleId);
+        ArticleResponseDto articleResponseDto = ArticleMapper.mapPubmedArticleToArticleResponseDto(articleById);
+        ArticleMapper.mapArticleTag(articleResponseDto, articleTags);
+        return articleResponseDto;
     }
 
     public ArticleTag populateArticleTag(ArticleTagRequestDto articleTagRequestDto) {
@@ -63,6 +84,11 @@ public class TagService {
         articleTag.setLabel(articleTagRequestDto.getTagName());
         articleTag.setWikiUrl(articleTagRequestDto.getWiki_url());
         articleTag.setPubmedId(articleTagRequestDto.getPubmedArticleId());
+        articleTag.setUserId(articleTagRequestDto.getUser_id());
         return articleTag;
+    }
+
+    public List<ArticleTag> getArticlesByUserId(Long userId) {
+        return tagRepository.findByUserId(userId);
     }
 }

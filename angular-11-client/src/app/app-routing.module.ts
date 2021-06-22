@@ -12,7 +12,7 @@ import { BoardModeratorComponent } from './board-moderator/board-moderator.compo
 import { BoardAdminComponent } from './board-admin/board-admin.component';
 
 const routes: Routes = [
-  { path: '', redirectTo: 'articles', pathMatch: 'full' },
+  { path: '', redirectTo: 'home', pathMatch: 'full' },
   { path: 'articles', component: ArticleListComponent },
   { path: 'articles/:id', component: ArticleDetailsComponent },
   { path: 'add', component: AddArticleComponent },
@@ -23,7 +23,7 @@ const routes: Routes = [
   { path: 'user', component: BoardUserComponent },
   { path: 'mod', component: BoardModeratorComponent },
   { path: 'admin', component: BoardAdminComponent },
-  { path: '', redirectTo: 'home', pathMatch: 'full' }
+
 ];
 
 @NgModule({

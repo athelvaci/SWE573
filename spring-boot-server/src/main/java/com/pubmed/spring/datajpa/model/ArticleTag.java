@@ -25,6 +25,9 @@ public class ArticleTag {
     @CreationTimestamp
     private Date createDate;
 
+    @Column(name = "user_id")
+    private long userId;
+
     public long getId() {
         return id;
     }
@@ -65,4 +68,11 @@ public class ArticleTag {
         this.createDate = createDate;
     }
 
+    public long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(long userId) {
+        this.userId = userId;
+    }
 }

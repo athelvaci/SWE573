@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {Article} from 'src/app/models/article.model';
 import {ArticleService} from 'src/app/services/article.service';
 import {TokenStorageService} from '../../_services/token-storage.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-article-list',
@@ -16,7 +17,7 @@ export class ArticleListComponent implements OnInit {
   title = '';
   currentUser: any;
 
-  constructor(private articleService: ArticleService, private token: TokenStorageService) {
+  constructor(private articleService: ArticleService, private token: TokenStorageService, private router: Router) {
   }
 
   ngOnInit(): void {
@@ -25,11 +26,11 @@ export class ArticleListComponent implements OnInit {
   }
 
   retrieveArticles(): void {
-    if (this.currentUser == null) {
-      return;
+    if (this.currentUser.id == null) {
+      this.redirectToHome();
     }
 
-    this.articleService.getAll()
+    this.articleService.getAllTaggedArticlesOfAUser(this.currentUser.id)
       .subscribe(
         data => {
           this.taggedArticles = data;
@@ -61,4 +62,7 @@ export class ArticleListComponent implements OnInit {
         });
   }
 
+  redirectToHome(): void {
+    this.router.navigate(['/home']);
+  }
 }

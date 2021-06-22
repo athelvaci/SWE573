@@ -2,9 +2,11 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {Article} from '../models/article.model';
+import {ArticleTagModel} from '../models/articleTag.model';
 
 const baseUrl = 'http://localhost:8080/api/articles';
 const taggedArticlesUrl = 'http://localhost:8080/api/tagged-articles';
+const tagArticleUrl = 'http://localhost:8080/api/articles/tag';
 const pubmedApi = 'http://localhost:8080/api/entrez/article';
 
 @Injectable({
@@ -49,5 +51,9 @@ export class ArticleService {
 
   getTaggedArticles(): Observable<any> {
     return this.http.get<Article[]>(`${pubmedApi}/tagged`);
+  }
+
+  tagArticle(tag: ArticleTagModel): Observable<any> {
+    return this.http.post(tagArticleUrl, tag);
   }
 }

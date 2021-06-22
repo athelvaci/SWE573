@@ -1,6 +1,8 @@
 export class ArticleTagModel {
   tagName?: string;
-  entityId?: any;
+  pubmedArticleId?: any;
   // tslint:disable-next-line:variable-name
   wiki_url?: string;
+  // tslint:disable-next-line:variable-name
+  user_id?: any;
 }

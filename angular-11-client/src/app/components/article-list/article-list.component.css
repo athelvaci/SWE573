@@ -3,3 +3,12 @@
   max-width: 750px;
   margin: auto;
 }
+
+.topSpace{
+  margin-top: 20px;
+  margin-left: 130px;
+}
+.topSpaceTitle{
+  margin-top: 40px;
+
+}

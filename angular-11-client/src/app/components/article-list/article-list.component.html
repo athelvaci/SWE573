@@ -1,9 +1,14 @@
+<div class="container topSpaceTitle">
+  <div class="row justify-content-center">
+    <h1>Search Article</h1>
+  </div>
+</div>
 <div class="list row">
   <div class="col-md-8">
-    <div class="input-group mb-3">
+    <div class="input-group mb-3 topSpace">
       <input
         type="text"
-        class="form-control"
+        class="form-control "
         placeholder="Search by title"
         [(ngModel)]="title"
       />
@@ -19,7 +24,7 @@
     </div>
   </div>
   <!--<div class="col-md-6" *ngIf="articles.length>0"> -->
-  <div class="col-md-6">
+  <div class="col-md-6" *ngIf="articles">
     <h4>Article List</h4>
     <ul class="list-group">
       <li
@@ -28,22 +33,20 @@
         [class.active]="i == currentIndex"
         (click)="setActiveArticle(article, i)"
       >
-        <!--<b>Title:</b> {{ (article.title.length>6)? (article.title | slice:0:69)+'..':(article.title) }}-->
-        <!--<b>Title:</b> {{ article.title | truncateString:[69, '...'] }} -->
+
         <b>Title:</b> {{ article.title }}
       </li>
     </ul>
-<!--
-    <button class="m-3 btn btn-sm btn-danger" (click)="removeAllArticles()">
-      Remove All
-    </button>
-    -->
+
   </div>
   <div class="col-md-6">
     <div *ngIf="currentArticle">
       <h4>Article</h4>
       <div>
-        <label><strong>ID:</strong></label> {{ currentArticle.entityId }}
+        <label><strong>ID:</strong></label>
+        <a routerLink="/articles/{{ currentArticle.id }}">
+          {{ currentArticle.id }}
+        </a>
       </div>
       <div>
         <label><strong>Title:</strong></label> {{ currentArticle.title }}
@@ -52,57 +55,41 @@
         <label><strong>Description:</strong></label>
         {{ currentArticle.articleAbstract }}
       </div>
-      <div>
-        <label><strong>Status:</strong></label>
-        {{ currentArticle.published ? "Published" : "Pending" }}
-      </div>
-      <a  routerLink="/articles/{{ currentArticle.id }}">
+      <a routerLink="/articles/{{ currentArticle.id }}">
         Details
       </a>
     </div>
-<!--
-    <div *ngIf="!currentArticle">
-      <br />
-      <p>Please click on an article...</p>
-    </div>
-  -->
+
   </div>
-  <!--
-    <div class="col-md-12">
-      <h4>Tagged Article List</h4>
-      <ul class="list-group">
-        <li
-          class="list-group-item"
-          *ngFor="let taggedArticle of taggedArticles; let i = index"
-          [class.active]="i == currentIndex"
-          (click)="setActiveArticle(taggedArticle, i)"
-        >
-          {{ taggedArticle.title }}
-          {{ taggedArticle.authors }}
-        </li>
-      </ul>
 
-    </div>
-    -->
 
-  <div class="col-md-12">
+  <div class="col-md-12 topSpaceTitle" *ngIf="taggedArticles">
+    <hr class="mt-2 mb-3"/>
+    <div class="row justify-content-center">
     <h4>Tagged Articles</h4>
+    </div>
     <table mdbTable>
       <thead>
       <tr>
-        <th scope="col">ID </th>
-        <th scope="col">Title </th>
-        <th scope="col">Tag </th>
+        <th scope="col">Pubmed-ID</th>
+        <th scope="col">Title</th>
+        <th scope="col">Tag</th>
       </tr>
       </thead>
       <tbody>
       <tr mdbTableCol *ngFor="let taggedArticle of taggedArticles">
-        <th scope="row">{{taggedArticle.id}}</th>
+        <th scope="row">
+          <a routerLink="/articles/{{taggedArticle.id}}">
+            {{taggedArticle.id}}
+          </a>
+         </th>
         <td>{{taggedArticle.title}}</td>
-        <td *ngFor="let tag of taggedArticle.tags">{{tag.tagName}}- {{tag.wiki_url}}</td>
+        <td *ngFor="let tag of taggedArticle.tags; let isLast=last">
+          <a href="{{tag.wiki_url}}">  {{tag.tagName}}{{isLast ? '' : ', '}}  </a>
+        </td>
       </tr>
       </tbody>
     </table>
 
   </div>
-  </div>
+</div>

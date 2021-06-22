@@ -8,7 +8,7 @@
 
   <div>
 
-    <div class="card" style="width: 38rem;">
+    <div class="card" style="width: 70rem;">
       <div class="card-body">
         <h5 class="card-title">{{currentArticle.title}}</h5>
         <h6 class="card-subtitle mb-3 text-muted">Authors </h6>
@@ -33,53 +33,56 @@
         </ul>
 
         <br>
+        <h6 class="card-subtitle mb-3 text-muted" *ngIf="currentArticle.tags">Tags </h6>
+        <ul class="list-group list-group-horizontal-md">
+          <li class="list-group-item" *ngFor="let tag of currentArticle.tags"
+          >
+            <a href="{{tag.wiki_url}}"  > {{tag.tagName}}</a>
 
-        <form>
-          <div class="form-group">
+          </li>
 
-            <input
-              type="text"
-              class="form-control"
-              id="tagName"
-              [(ngModel)]="currentArticle.tags"
-              name="title"
-              placeholder="Tag name"
-            />
-            <input
-              type="text"
-              class="form-control"
-              id="tagLink"
-              [(ngModel)]="currentArticle.rate "
-              name="title"
-              placeholder="URL to WikiData"
-            />
-          </div>
-        </form>
+        </ul>
 
-        <button
-          *ngIf="!currentArticle.published"
-          class="btn btn-primary"
-          (click)="updatePublished(true)"
-        >
-          Add tag
-        </button>
-        <!--
-                <button class="badge badge-danger mr-2" (click)="deleteArticle()">
-                  Delete
-                </button>
 
-                <button
-                  type="submit"
-                  class="badge badge-success mb-2"
-                  (click)="updateArticle()"
-                >
-                  Update
-                </button>
-                -->
+
+
       </div>
     </div>
+    <br>
+    <br>
+    <div class="d-flex justify-content-center">
+    <div class="card" style="width: 20rem;">
+      <form>
+        <div class="form-group">
 
+          <input
+            type="text"
+            class="form-control"
+            id="tagName"
+            [(ngModel)]="tagName"
+            name="tagName"
+            placeholder="Tag name"
+          />
+          <input
+            type="text"
+            class="form-control"
+            id="tagLink"
+            [(ngModel)]="wikiURL "
+            name="wikiURL"
+            placeholder="URL to WikiData"
+          />
+        </div>
+      </form>
 
+      <button
+        class="btn btn-primary"
+        (click)="tagArticle()"
+      >
+        Add tag
+      </button>
+    </div>
+
+    </div>
   </div>
 
 </div>

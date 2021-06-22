@@ -2,22 +2,20 @@ package com.pubmed.spring.datajpa.controller;
 
 import com.pubmed.spring.datajpa.model.Article;
 import com.pubmed.spring.datajpa.model.ArticleTag;
-import com.pubmed.spring.datajpa.model.User;
 import com.pubmed.spring.datajpa.model.dto.ArticleResponseDto;
 import com.pubmed.spring.datajpa.model.request.ArticleTagRequestDto;
 import com.pubmed.spring.datajpa.repository.ArticleRepository;
-import com.pubmed.spring.datajpa.repository.UserRepository;
 import com.pubmed.spring.datajpa.service.TagService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @RestController
 @RequestMapping("/api")
 public class ArticleController {
@@ -26,8 +24,6 @@ public class ArticleController {
     private ArticleRepository articleRepository;
     @Autowired
     private TagService tagService;
-    @Autowired
-    private UserRepository userRepository;
 
     @GetMapping("/tagged-articles")
     public ResponseEntity<List<ArticleResponseDto>> getAllArticles() {
@@ -48,11 +44,8 @@ public class ArticleController {
     @GetMapping("/tagged-articles/{userId}")
     public ResponseEntity<List<ArticleResponseDto>> getTaggedArticlesById(@PathVariable("userId") long userId) {
         try {
-            Optional<User> user = userRepository.findById(userId);
-            if (!user.isPresent()) {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-            List<ArticleTag> allArticleTags = new ArrayList<>();
+            List<ArticleTag> allArticleTags = tagService.getArticlesByUserId(userId);
+
             List<ArticleResponseDto> articlesByTag = tagService.getArticlesByTag(allArticleTags);
 
             if (articlesByTag.isEmpty()) {
@@ -123,30 +116,6 @@ public class ArticleController {
         }
     }
 
-    @DeleteMapping("/articles")
-    public ResponseEntity<HttpStatus> deleteAllArticles() {
-        try {
-            articleRepository.deleteAll();
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-
-    }
-
-    @GetMapping("/articles/published")
-    public ResponseEntity<List<Article>> findByPublished() {
-        try {
-            List<Article> articles = articleRepository.findByPublished(true);
-
-            if (articles.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-            return new ResponseEntity<>(articles, HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
     @GetMapping(value = "/entrez/article", params = {"query"})
     public ResponseEntity<Set<ArticleResponseDto>> getArticles(@RequestParam String query) {

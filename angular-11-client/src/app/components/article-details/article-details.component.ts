@@ -2,6 +2,8 @@ import {Component, OnInit} from '@angular/core';
 import {ArticleService} from 'src/app/services/article.service';
 import {ActivatedRoute, Router} from '@angular/router';
 import {Article} from 'src/app/models/article.model';
+import {ArticleTagModel} from '../../models/articleTag.model';
+import {TokenStorageService} from '../../_services/token-storage.service';
 
 @Component({
   selector: 'app-article-details',
@@ -14,15 +16,22 @@ export class ArticleDetailsComponent implements OnInit {
     articleAbstract: ''
   };
   message = '';
+  tagName = '';
+  wikiURL = '';
+  currentUser: any;
 
   constructor(
     private articleService: ArticleService,
     private route: ActivatedRoute,
-    private router: Router) {
+    private router: Router,
+    private token: TokenStorageService) {
   }
 
   ngOnInit(): void {
     this.message = '';
+    this.tagName = '';
+    this.wikiURL = '';
+    this.currentUser = this.token.getUser();
     this.getArticle(this.route.snapshot.params.id);
   }
 
@@ -38,25 +47,22 @@ export class ArticleDetailsComponent implements OnInit {
         });
   }
 
-  updatePublished(status: boolean): void {
-    const data = {
-      title: this.currentArticle.title,
-      description: this.currentArticle.articleAbstract,
-      published: status
+  tagArticle(): void {
+    const postTag: ArticleTagModel = {
+      tagName: this.tagName,
+      wiki_url: this.wikiURL,
+      pubmedArticleId: this.currentArticle.id,
+      user_id: this.currentUser.id
     };
-
-    this.message = '';
-
-    this.articleService.update(this.currentArticle.entityId, data)
-      .subscribe(
-        response => {
-          // this.currentArticle.published = status;
-          console.log(response);
-          this.message = response.message ? response.message : 'This article was updated successfully!';
-        },
-        error => {
-          console.log(error);
-        });
+    this.articleService.tagArticle(postTag).subscribe(
+      response => {
+        console.log(response);
+        this.message = response.message ? response.message : 'Article Tagged successfully';
+        this.ngOnInit();
+      },
+      error => {
+        console.log(error);
+      });
   }
 
   updateArticle(): void {
